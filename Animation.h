@@ -14,6 +14,8 @@ public:
   virtual int draw();
 
   bool turnOffAfterFinish = false;
+  bool keepLightsOn = false;
+  bool keepLastExtension = 1;
   int holdTime = DEFAULT_HOLD;
   int separateTime = DEFAULT_SEPARATE;
   int pauseTime = DEFAULT_PAUSE;

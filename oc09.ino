@@ -55,7 +55,7 @@ Animation *animation;
 bool animationEnded = true;
 bool forceReload = true;
 byte currentAnimation = 0;
-#define ANIMATION_COUNT 3
+#define ANIMATION_COUNT 5
 unsigned long nextTimeAnimation = 0;
 
 // Buttons
@@ -104,7 +104,7 @@ void setup()
     pinMode(PIN_ENABLE, OUTPUT);
     pinMode(PIN_BUTTON, INPUT_PULLUP);
     digitalWrite(PIN_ENABLE, HIGH);
-    setClock(00, 00);
+    // setClock(00, 00);
     drawIntroAnimation();
     delay(1000);
 }
@@ -249,6 +249,7 @@ void buttonsCheck()
     if (IS_BUTTON_RELEASED)
     {
         ignoreOffPress = false;
+        ignoreNextPress = false;
     }
 
     if (longPressHappening && IS_BUTTON_PRESSED)
@@ -273,10 +274,6 @@ void buttonsCheck()
         if (!ignoreNextPress)
         {
             shortPress();
-        }
-        else
-        {
-            ignoreNextPress = false;
         }
     }
     if (buttonPressed)
@@ -461,11 +458,26 @@ void reloadMode()
         break;
     case 1:
         animation = new AnimationGalaxy();
+        animation->keepLightsOn = true;
+        animation->holdTime = 400;
+        animation->separateTime = 400;
+        animation->pauseTime = 0;
+        break;
+    case 2:
+        animation = new AnimationGalaxy();
+        animation->keepLightsOn = true;
+        animation->holdTime = 100;
+        animation->separateTime = 200;
+        animation->keepLastExtension = 3;
+        animation->pauseTime = 00;
+        break;        
+    case 3:
+        animation = new AnimationGalaxy();
         animation->holdTime = 400;
         animation->separateTime = 800;
         animation->pauseTime = 100;
         break;
-    case 2:
+    case 4:
         animation = new AnimationGalaxy();
         break;
     }

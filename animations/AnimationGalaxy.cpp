@@ -1,7 +1,6 @@
 #include "Arduino.h"
 #include "../Animation.h"
 
-
 class AnimationGalaxy : public Animation
 {
 
@@ -46,10 +45,21 @@ public:
         {
             if (currentValue < val)
             {
-                setPixelColorToBase(pixelsAddresses[currentValue]);
+                if(!keepLightsOn){
+                    setPixelColorToBase(pixelsAddresses[currentValue]);
+                }else{
+                    for(byte i = 0; i <= currentValue; i++){
+                        setPixelColorToBase(pixelsAddresses[i]);
+                    }
+                }
                 currentValue++;
                 pixels.show();
                 nextWait = pauseTime;
+
+                if(keepLightsOn && currentValue == val){
+                    return holdTime * keepLastExtension;// last, make it last!
+                } 
+
                 return holdTime;
             }
             else if (currentDigit < 3)
