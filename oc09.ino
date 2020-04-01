@@ -104,7 +104,7 @@ void setup()
     pinMode(PIN_ENABLE, OUTPUT);
     pinMode(PIN_BUTTON, INPUT_PULLUP);
     digitalWrite(PIN_ENABLE, HIGH);
-    // setClock(00, 00);
+    setClock(00, 00);
     drawIntroAnimation();
     delay(1000);
 }
