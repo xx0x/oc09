@@ -61,13 +61,14 @@ unsigned long nextTimeAnimation = 0;
 // Buttons
 #define IS_BUTTON_PRESSED digitalRead(PIN_BUTTON) == LOW
 #define IS_BUTTON_RELEASED digitalRead(PIN_BUTTON) != LOW
-#define BUTTON_LONG_PRESS 1000
+#define BUTTON_LONG_PRESS 600
 #define BUTTON_OFF_PRESS 2000
 bool buttonPressed = false;
 bool ignoreNextPress = false;
 unsigned long buttonPressedTime = 0;
 bool longPressHappening = false;
 bool wakenUpByButton = false;
+bool ignoreOffPress = false; // when waking up not to turn the device off
 
 // Menu
 #define MENU_ITEMS 4
@@ -79,6 +80,7 @@ bool wakenUpByButton = false;
 #define MENU_VALUE_OFFSET 4
 byte currentMenuItem = 0;
 byte menuDetailSetting = 0;
+unsigned long modeMenuTime = 0;
 
 // Modes
 #define MODE_SET 0
@@ -86,6 +88,7 @@ byte menuDetailSetting = 0;
 #define MODE_MENU 2
 #define MODE_MENU_DETAIL 3
 byte currentMode = MODE_CLOCK;
+#define MENU_TIMEOUT 5000
 
 // Time setting
 byte digitValues[4] = {0, 0, 0, 0};
@@ -116,9 +119,11 @@ void loop()
         break;
     case MODE_MENU:
         drawMenu();
+        checkMenuTimeout();
         break;
     case MODE_MENU_DETAIL:
         drawMenuDetail();
+        checkMenuTimeout();
         break;
     case MODE_SET:
         drawSet();
@@ -241,9 +246,14 @@ void drawSet()
 
 void buttonsCheck()
 {
+    if (IS_BUTTON_RELEASED)
+    {
+        ignoreOffPress = false;
+    }
+
     if (longPressHappening && IS_BUTTON_PRESSED)
     {
-        if (millis() - buttonPressedTime >= BUTTON_OFF_PRESS)
+        if (!ignoreOffPress && (millis() - buttonPressedTime >= BUTTON_OFF_PRESS))
         {
             longPressHappening = false;
             manualSleep();
@@ -290,9 +300,11 @@ void shortPress()
         nextAnimation();
         break;
     case MODE_MENU:
+        resetMenuTimeout();
         nextMenuItem();
         break;
     case MODE_MENU_DETAIL:
+        resetMenuTimeout();
         switch (currentMenuItem)
         {
         case MENU_BRIGHTNESS:
@@ -330,6 +342,21 @@ void shortPress()
     }
 }
 
+void resetMenuTimeout()
+{
+    modeMenuTime = millis();
+}
+
+bool checkMenuTimeout()
+{
+    if ((millis() - modeMenuTime) > MENU_TIMEOUT)
+    {
+        currentMode = MODE_CLOCK;
+        forceReload = true;
+        delay(500);
+    }
+}
+
 void longPress()
 {
     switch (currentMode)
@@ -350,6 +377,7 @@ void longPress()
     case MODE_CLOCK:
         currentMenuItem = 0;
         currentMode = MODE_MENU;
+        resetMenuTimeout();
         break;
     case MODE_MENU:
         switch (currentMenuItem)
@@ -362,6 +390,7 @@ void longPress()
         case MENU_TIMINGS:
         case MENU_BRIGHTNESS:
             currentMode = MODE_MENU_DETAIL;
+            resetMenuTimeout();
             break;
         case MENU_SET:
             digitValues[0] = 0;
@@ -374,6 +403,7 @@ void longPress()
         break;
     case MODE_MENU_DETAIL:
         currentMode = MODE_MENU;
+        resetMenuTimeout();
         break;
     }
 }
@@ -489,9 +519,24 @@ void setClock(byte hr, byte min)
     RTC.write(tm);
 }
 
-void manualSleep()
+void turnOffBeforeSleep()
 {
     wakenUpByButton = false;
+    wakeUpCount = 0;
+    digitalWrite(PIN_ENABLE, LOW);
+}
+
+void turnOnAfterSleep()
+{
+    digitalWrite(PIN_ENABLE, HIGH);
+    forceReload = true;
+    currentMode = MODE_CLOCK;
+    ignoreOffPress = true;
+}
+
+void manualSleep()
+{
+
     for (short i = NUMPIXELS; i >= 0; i--)
     {
         pixels.clear();
@@ -502,24 +547,26 @@ void manualSleep()
         pixels.show();
         delay(100);
     }
+
+    turnOffBeforeSleep();
+
     delay(1000);
     digitalWrite(PIN_ENABLE, LOW);
+
     doSleep();
-    digitalWrite(PIN_ENABLE, HIGH);
-    currentMode = MODE_CLOCK;
+
+    delay(300);
+    turnOnAfterSleep();
 }
 
 void automaticSleep()
 {
-    wakenUpByButton = false;
-    wakeUpCount = 0;
-    digitalWrite(PIN_ENABLE, LOW);
-    //wdt_reset();
+    turnOffBeforeSleep();
+
     cli();
     MCUSR = 0x00;
     WDTCR |= _BV(WDCE) | _BV(WDE);
     WDTCR = _BV(WDIE) | _BV(WDP3); // 4s
-                                   // WDTCR = _BV(WDIE) | _BV(WDP3) | _BV(WDP0); // 8s
     sei();
     do
     {
@@ -527,7 +574,6 @@ void automaticSleep()
         wakeUpCount++;
     } while (wakeUpCount < timingModes[currentTiming] && !wakenUpByButton);
 
-    //wdt_reset();
     cli();
     MCUSR = 0x00;
     WDTCR |= _BV(WDCE) | _BV(WDE);
@@ -536,11 +582,10 @@ void automaticSleep()
 
     if (wakenUpByButton)
     {
-        delay(500);
+        delay(300);
     }
 
-    currentMode = MODE_CLOCK;
-    digitalWrite(PIN_ENABLE, HIGH);
+    turnOnAfterSleep();
 }
 
 // btn interrupt
