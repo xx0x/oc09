@@ -62,13 +62,15 @@ unsigned long nextTimeAnimation = 0;
 #define IS_BUTTON_PRESSED digitalRead(PIN_BUTTON) == LOW
 #define IS_BUTTON_RELEASED digitalRead(PIN_BUTTON) != LOW
 #define BUTTON_LONG_PRESS 600
+#define WAKEUP_LONG_PRESS 1200
 #define BUTTON_OFF_PRESS 2000
+#define WAKEUP_OFF_PRESS 3000
 bool buttonPressed = false;
 bool ignoreNextPress = false;
 unsigned long buttonPressedTime = 0;
 bool longPressHappening = false;
 bool wakenUpByButton = false;
-bool ignoreOffPress = false; // when waking up not to turn the device off
+bool wakeUpPress = false; // when waking up not to turn the device off
 
 // Menu
 #define MENU_ITEMS 4
@@ -248,13 +250,12 @@ void buttonsCheck()
 {
     if (IS_BUTTON_RELEASED)
     {
-        ignoreOffPress = false;
-        ignoreNextPress = false;
+        wakeUpPress = false;
     }
 
     if (longPressHappening && IS_BUTTON_PRESSED)
     {
-        if (!ignoreOffPress && (millis() - buttonPressedTime >= BUTTON_OFF_PRESS))
+        if ((millis() - buttonPressedTime >= (wakeUpPress ? WAKEUP_OFF_PRESS : BUTTON_OFF_PRESS)))
         {
             longPressHappening = false;
             manualSleep();
@@ -278,13 +279,17 @@ void buttonsCheck()
     }
     if (buttonPressed)
     {
-        if (millis() - buttonPressedTime >= BUTTON_LONG_PRESS)
+        if (millis() - buttonPressedTime >= (wakeUpPress ? WAKEUP_LONG_PRESS : BUTTON_LONG_PRESS))
         {
             buttonPressed = false;
             longPressHappening = true;
             longPress();
             ignoreNextPress = false;
         }
+    }
+    if (IS_BUTTON_RELEASED)
+    {
+        ignoreNextPress = false;
     }
 }
 
@@ -470,7 +475,7 @@ void reloadMode()
         animation->separateTime = 200;
         animation->keepLastExtension = 3;
         animation->pauseTime = 00;
-        break;        
+        break;
     case 3:
         animation = new AnimationGalaxy();
         animation->holdTime = 400;
@@ -543,7 +548,7 @@ void turnOnAfterSleep()
     digitalWrite(PIN_ENABLE, HIGH);
     forceReload = true;
     currentMode = MODE_CLOCK;
-    ignoreOffPress = true;
+    wakeUpPress = true;
 }
 
 void manualSleep()
@@ -567,8 +572,9 @@ void manualSleep()
 
     doSleep();
 
-    delay(300);
     turnOnAfterSleep();
+    ignoreNextPress = true;
+    delay(300);
 }
 
 void automaticSleep()
