@@ -15,10 +15,4 @@ Coming soon.
 
 ## Gallery
 
-<img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-003.jpg" width="300" />
-<img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-006.jpg" width="300" />
-<img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-004.jpg" width="300" />
-<img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-005.jpg" width="300" />
-<img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-002.jpg" width="300" />
-<img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-009.jpg" width="300" />
-<img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-010.jpg" width="300" />
+<img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-003.jpg" width="200" /> <img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-006.jpg" width="200" /> <img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-004.jpg" width="200" /> <img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-005.jpg" width="200" /> <img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-002.jpg" width="200" /> <img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-009.jpg" width="200" /> <img src="https://github.com/xx0x/oc09/raw/master/docs/oc09-promo-karton-010.jpg" width="200" />
