@@ -10,11 +10,8 @@ Coming soon.
 
 ## Manual
 
-English (draft):
-https://github.com/xx0x/gbpxl/raw/master/manuals/oc09-manual-draft-en.jpg
-
-Czech (draft):
-https://github.com/xx0x/gbpxl/raw/master/manuals/oc09-manual-draft-cs.jpg
+* [English (draft)](https://github.com/xx0x/oc09/raw/master/manuals/oc09-manual-draft-en.pdf)
+* [Czech (draft)](https://github.com/xx0x/oc09/raw/master/manuals/oc09-manual-draft-cs.pdf)
 
 ## Gallery
 
