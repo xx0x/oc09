@@ -4,9 +4,9 @@
 
 oc09 is an experimental clock in a pendant form. It displays the time by flashing RGB leds in various modes. There are 9 LEDs at the front side, at the back there is CR2032 battery holder and single button, which is used for control.
 
-## Introduction video
+## Introduction video (Czech)
 
-Coming soon.
+[![Video introduction](https://github.com/xx0x/oc09/raw/master/docs/oc09_video.jpg)](http://www.youtube.com/watch?v=-uLJIxHrO9M "Video introduction")
 
 ## Manual
 
