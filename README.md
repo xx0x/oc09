@@ -6,7 +6,7 @@ oc09 is an experimental clock in a pendant form. It displays the time by flashin
 
 ## Introduction video (Czech)
 
-[![Video introduction](https://github.com/xx0x/oc09/raw/master/docs/oc09_video_cz.jpg)](http://www.youtube.com/watch?v=-uLJIxHrO9M "Video introduction")
+[![Video introduction](https://github.com/xx0x/oc09/raw/master/docs/oc09_video_cz.jpg)](http://www.youtube.com/watch?v=cF0FKERQrrc "Video introduction")
 
 ## Manual
 
